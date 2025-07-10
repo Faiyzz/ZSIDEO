@@ -12,6 +12,7 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [loadingText, setLoadingText] = useState("Initializing...")
   const [isMounted, setIsMounted] = useState(false)
+  const [particlePositions, setParticlePositions] = useState<Array<{x: number, y: number}>>([])
 
   const loadingSteps = [
     "Initializing...",
@@ -44,6 +45,11 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
 
   useEffect(() => {
     setIsMounted(true)
+    // Generate particle positions only on client side
+    setParticlePositions([...Array(6)].map(() => ({
+      x: Math.random() * 400 - 200,
+      y: Math.random() * 400 - 200
+    })))
   }, [])
 
   return (
@@ -163,16 +169,16 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
             </motion.div>
 
             {/* Floating Particles */}
-            {isMounted && (
+            {isMounted && particlePositions.length > 0 && (
               <div className="absolute inset-0 pointer-events-none">
-                {[...Array(6)].map((_, i) => (
+                {particlePositions.map((position, i) => (
                   <motion.div
                     key={i}
                     initial={{ 
                       opacity: 0,
                       scale: 0,
-                      x: Math.random() * 400 - 200,
-                      y: Math.random() * 400 - 200
+                      x: position.x,
+                      y: position.y
                     }}
                     animate={{ 
                       opacity: [0, 1, 0],
