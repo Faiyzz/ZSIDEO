@@ -6,10 +6,9 @@ import { Sparkles } from "lucide-react"
 
 interface LoadingScreenProps {
   isLoading: boolean
-  onComplete: () => void
 }
 
-export default function LoadingScreen({ isLoading, onComplete }: LoadingScreenProps) {
+export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [loadingText, setLoadingText] = useState("Initializing...")
 
@@ -35,20 +34,12 @@ export default function LoadingScreen({ isLoading, onComplete }: LoadingScreenPr
           setLoadingText(loadingSteps[stepIndex])
         }
 
-        if (newProgress >= 100) {
-          clearInterval(interval)
-          setTimeout(() => {
-            onComplete()
-          }, 500)
-          return 100
-        }
-        
-        return newProgress
+        return Math.min(newProgress, 100)
       })
     }, 100)
 
     return () => clearInterval(interval)
-  }, [isLoading, onComplete, loadingSteps])
+  }, [isLoading, loadingSteps])
 
   return (
     <AnimatePresence>
