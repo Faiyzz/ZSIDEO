@@ -11,6 +11,7 @@ interface LoadingScreenProps {
 export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [loadingText, setLoadingText] = useState("Initializing...")
+  const [isMounted, setIsMounted] = useState(false)
 
   const loadingSteps = [
     "Initializing...",
@@ -40,6 +41,10 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
 
     return () => clearInterval(interval)
   }, [isLoading, loadingSteps])
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   return (
     <AnimatePresence>
@@ -158,31 +163,33 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
             </motion.div>
 
             {/* Floating Particles */}
-            <div className="absolute inset-0 pointer-events-none">
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ 
-                    opacity: 0,
-                    scale: 0,
-                    x: Math.random() * 400 - 200,
-                    y: Math.random() * 400 - 200
-                  }}
-                  animate={{ 
-                    opacity: [0, 1, 0],
-                    scale: [0, 1, 0],
-                    y: [0, -100]
-                  }}
-                  transition={{ 
-                    duration: 3, 
-                    repeat: Infinity, 
-                    delay: i * 0.5,
-                    ease: "easeOut"
-                  }}
-                  className="absolute w-2 h-2 bg-blue-500 rounded-full"
-                />
-              ))}
-            </div>
+            {isMounted && (
+              <div className="absolute inset-0 pointer-events-none">
+                {[...Array(6)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ 
+                      opacity: 0,
+                      scale: 0,
+                      x: Math.random() * 400 - 200,
+                      y: Math.random() * 400 - 200
+                    }}
+                    animate={{ 
+                      opacity: [0, 1, 0],
+                      scale: [0, 1, 0],
+                      y: [0, -100]
+                    }}
+                    transition={{ 
+                      duration: 3, 
+                      repeat: Infinity, 
+                      delay: i * 0.5,
+                      ease: "easeOut"
+                    }}
+                    className="absolute w-2 h-2 bg-blue-500 rounded-full"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </motion.div>
       )}
