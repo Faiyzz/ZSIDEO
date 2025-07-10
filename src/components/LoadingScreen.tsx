@@ -95,7 +95,9 @@ export default function LoadingScreen({ isLoading, onComplete }: LoadingScreenPr
               animate={{ scale: 1, opacity: 1 }}
               transition={{ 
                 duration: 1, 
-                ease: "elastic.out(1, 0.5)",
+                type: "spring",
+                stiffness: 200,
+                damping: 10,
                 delay: 0.2 
               }}
               className="flex items-center justify-center gap-3 mb-8"
