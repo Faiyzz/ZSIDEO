@@ -1,13 +1,14 @@
+"use client"
+
 import Navbar from "../components/Navbar"
 import HeroSection from "../components/HeroSection/Hero"
 import About from "../components/About"
 import Services from "../components/Services"
 import Testimonials from "../components/Testimonials"
 import Footer from "../components/Footer"
-"use client"
-
 import LoadingScreen from "../components/LoadingScreen"
 import { useState, useEffect } from "react"
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [showContent, setShowContent] = useState(false)
