@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Environment, ContactShadows } from "@react-three/drei"
 import { gsap } from "gsap"
@@ -17,8 +17,14 @@ export default function Scene3D() {
   const { camera } = useThree()
   const groupRef = useRef<THREE.Group>(null!)
   const cameraRef = useRef(camera)
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
+    // Add a small delay to ensure everything is mounted
+    const timer = setTimeout(() => {
+      setIsReady(true)
+    }, 100)
+
     cameraRef.current = camera
 
     // Delayed initial camera animation to prevent stutter
@@ -72,10 +78,13 @@ export default function Scene3D() {
 
     return () => {
       tl.kill()
+      clearTimeout(timer)
     }
   }, [camera])
 
   useFrame((state) => {
+    if (!isReady) return
+    
     // Subtle camera sway
     if (cameraRef.current) {
       cameraRef.current.position.x += Math.sin(state.clock.elapsedTime * 0.5) * 0.002
@@ -86,11 +95,11 @@ export default function Scene3D() {
   return (
     <group ref={groupRef}>
       {/* Lighting */}
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={0.6} />
       <directionalLight
         castShadow
         position={[5, 5, 5]}
-        intensity={1.5}
+        intensity={1.2}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-far={50}
@@ -103,7 +112,7 @@ export default function Scene3D() {
       <pointLight position={[5, -5, 5]} intensity={0.3} color="#3b82f6" />
 
       {/* Environment */}
-      <Environment preset="city" />
+      <Environment preset="city" background={false} />
       
       {/* Ground shadows */}
       <ContactShadows
@@ -116,8 +125,12 @@ export default function Scene3D() {
       />
 
       {/* Main 3D Objects */}
-      <CameraLens />
-      <TimelineRing />
+      {isReady && (
+        <>
+          <CameraLens />
+          <TimelineRing />
+        </>
+      )}
     </group>
   )
 }

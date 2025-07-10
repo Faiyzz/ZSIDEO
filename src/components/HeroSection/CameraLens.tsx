@@ -1,16 +1,35 @@
 "use client"
 
-import { useGLTF } from "@react-three/drei"
+import { useGLTF, Html } from "@react-three/drei"
 import { useFrame } from "@react-three/fiber"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { gsap } from "gsap"
 import * as THREE from "three"
+import { Camera } from "lucide-react"
 
 export default function CameraLens() {
   const group = useRef<THREE.Group>(null!)
-  const { scene } = useGLTF("/models/uploads_files_5084032_Cam1.glb")
+  const [modelError, setModelError] = useState(false)
+  const [modelLoaded, setModelLoaded] = useState(false)
+
+  let scene: THREE.Object3D | null = null
+  
+  try {
+    const gltf = useGLTF("/models/uploads_files_5084032_Cam1.glb")
+    scene = gltf.scene
+    if (!modelLoaded) {
+      setModelLoaded(true)
+    }
+  } catch (error) {
+    console.warn('Failed to load 3D model:', error)
+    if (!modelError) {
+      setModelError(true)
+    }
+  }
 
   useEffect(() => {
+    if (!group.current || modelError) return
+
     if (group.current) {
       // Initial animation
       gsap.fromTo(group.current.scale, 
@@ -58,7 +77,19 @@ export default function CameraLens() {
 
   return (
     <group ref={group} position={[0, -0.3, 0]} scale={8} castShadow receiveShadow>
-      <primitive object={scene} />
+      {scene && !modelError ? (
+        <primitive object={scene} />
+      ) : (
+        // Fallback geometry when model fails to load
+        <mesh castShadow receiveShadow>
+          <cylinderGeometry args={[0.15, 0.2, 0.3, 32]} />
+          <meshStandardMaterial 
+            color="#2563eb" 
+            metalness={0.8} 
+            roughness={0.2}
+          />
+        </mesh>
+      )}
       
       {/* Additional glow effect */}
       <mesh position={[0, 0, 0]} scale={1.2}>
@@ -71,4 +102,3 @@ export default function CameraLens() {
       </mesh>
     </group>
   )
-}
