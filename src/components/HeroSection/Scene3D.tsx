@@ -21,30 +21,30 @@ export default function Scene3D() {
   useEffect(() => {
     cameraRef.current = camera
 
-    // Initial camera animation
-    gsap.fromTo(camera.position, 
-      { x: 10, y: 5, z: 10 },
-      { 
-        x: 0, 
-        y: 1.5, 
-        z: 5, 
-        duration: 2, 
-        delay: 0.5,
-        ease: "power3.out" 
-      }
-    )
-
-    gsap.fromTo(camera.rotation, 
-      { x: -0.5, y: 0.8, z: 0.3 },
-      { 
-        x: 0, 
-        y: 0, 
-        z: 0, 
-        duration: 2, 
-        delay: 0.5,
-        ease: "power3.out" 
-      }
-    )
+    // Delayed initial camera animation to prevent stutter
+    const cameraTimeline = gsap.timeline({ delay: 1 })
+    
+    cameraTimeline
+      .fromTo(camera.position, 
+        { x: 10, y: 5, z: 10 },
+        { 
+          x: 0, 
+          y: 1.5, 
+          z: 5, 
+          duration: 2, 
+          ease: "power3.out" 
+        }
+      )
+      .fromTo(camera.rotation, 
+        { x: -0.5, y: 0.8, z: 0.3 },
+        { 
+          x: 0, 
+          y: 0, 
+          z: 0, 
+          duration: 2, 
+          ease: "power3.out" 
+        }, "-=2"
+      )
 
     // Scroll-triggered camera animation
     const tl = gsap.timeline({

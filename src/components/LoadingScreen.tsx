@@ -26,19 +26,20 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
   useEffect(() => {
     if (!isLoading) return
 
+    let currentProgress = 0
     const interval = setInterval(() => {
       setProgress(prev => {
-        const newProgress = prev + Math.random() * 15 + 5
+        currentProgress = prev + Math.random() * 12 + 3
         
         // Update loading text based on progress
-        const stepIndex = Math.floor((newProgress / 100) * loadingSteps.length)
+        const stepIndex = Math.floor((currentProgress / 100) * loadingSteps.length)
         if (stepIndex < loadingSteps.length) {
           setLoadingText(loadingSteps[stepIndex])
         }
 
-        return Math.min(newProgress, 100)
+        return Math.min(currentProgress, 100)
       })
-    }, 100)
+    }, 150) // Slightly slower for smoother progress
 
     return () => clearInterval(interval)
   }, [isLoading, loadingSteps])

@@ -18,40 +18,40 @@ export default function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero text animations
-      gsap.fromTo(".hero-badge", 
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, delay: 0.8, ease: "power3.out" }
-      )
+      // Delay hero animations to prevent double loading
+      const heroTimeline = gsap.timeline({ delay: 0.5 })
+      
+      heroTimeline
+        .fromTo(".hero-badge", 
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+        )
+        .fromTo(".hero-title", 
+          { y: 100, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }, "-=0.8"
+        )
+        .fromTo(".hero-subtitle", 
+          { y: 80, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.8"
+        )
+        .fromTo(".hero-buttons", 
+          { y: 60, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.6"
+        )
+        .fromTo(".hero-stats", 
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.6"
+        )
 
-      gsap.fromTo(".hero-title", 
-        { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, delay: 1, ease: "power3.out" }
-      )
-
-      gsap.fromTo(".hero-subtitle", 
-        { y: 80, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, delay: 1.2, ease: "power3.out" }
-      )
-
-      gsap.fromTo(".hero-buttons", 
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, delay: 1.4, ease: "power3.out" }
-      )
-
-      gsap.fromTo(".hero-stats", 
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, delay: 1.6, ease: "power3.out" }
-      )
-
-      // Floating animation for stats
+      // Floating animation for stats - start after main animation
       gsap.to(".stat-item", {
         y: -10,
         duration: 2,
         ease: "power2.inOut",
         yoyo: true,
         repeat: -1,
-        stagger: 0.2
+        stagger: 0.2,
+        delay: 2
       })
 
     }, heroRef)
@@ -107,7 +107,15 @@ export default function HeroSection() {
           className="max-w-5xl mx-auto"
         >
           {/* Badge */}
-         
+          <motion.div
+            variants={itemVariants}
+            className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-[#3ac4ec]/30 mb-6"
+          >
+            <Zap className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-600 font-jetbrains-mono tracking-wider">
+              AI-POWERED EDITING
+            </span>
+          </motion.div>
 
           {/* Main Title */}
           <motion.h1 
